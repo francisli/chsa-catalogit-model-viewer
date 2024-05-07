@@ -1,13 +1,23 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "create-block/chsa-catalogit-model-viewer",
+  "name": "chsa/catalogit-model-viewer",
   "version": "0.1.0",
-  "title": "Chsa Catalogit Model Viewer",
+  "title": "CHSA CatalogIt Model Viewer",
   "category": "widgets",
-  "icon": "smiley",
-  "description": "Example block scaffolded with Create Block tool.",
+  "description": "Displays a 3D model stored in an entry in CatalogIt.",
   "example": {},
+  "attributes": {
+    "entryId": {
+      "type": "string"
+    },
+    "alt": {
+      "type": "string"
+    },
+    "src": {
+      "type": "string"
+    }
+  },
   "supports": {
     "html": false
   },
