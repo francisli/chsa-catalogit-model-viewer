@@ -88,13 +88,17 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	const setupRef = useRefEffect( ( element ) => {
 		const { ownerDocument } = element;
-		const script = ownerDocument.createElement( 'script' );
-		script.setAttribute(
-			'src',
-			'https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js'
-		);
-		script.setAttribute( 'type', 'module' );
-		ownerDocument.body.appendChild( script );
+		let { href } = ownerDocument.defaultView.location;
+		if ( href.startsWith( 'blob:' ) ) {
+			href = href.substring( 5 );
+		}
+		const url = new URL( href );
+		const src = `${ url.origin }/wp-content/plugins/chsa-catalogit-model-viewer/build/view.js`;
+		if ( ! ownerDocument.body.querySelector( `script[src="${ src }"]` ) ) {
+			const script = ownerDocument.createElement( 'script' );
+			script.setAttribute( 'src', src );
+			ownerDocument.body.appendChild( script );
+		}
 	} );
 
 	return (

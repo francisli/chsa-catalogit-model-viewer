@@ -32,8 +32,11 @@ function ModelViewer({
     "ar-modes": "webxr scene-viewer quick-look",
     "tone-mapping": "commerce",
     "shadow-intensity": "1",
+    "auto-rotate": true,
     "data-auto-rotate": true,
+    ar: true,
     "data-ar": true,
+    "camera-controls": true,
     "data-camera-controls": true
   }), !src && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "wp-block-chsa-catalogit-model-viewer__placeholder"
@@ -162,10 +165,19 @@ function Edit({
     const {
       ownerDocument
     } = element;
-    const script = ownerDocument.createElement('script');
-    script.setAttribute('src', 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js');
-    script.setAttribute('type', 'module');
-    ownerDocument.body.appendChild(script);
+    let {
+      href
+    } = ownerDocument.defaultView.location;
+    if (href.startsWith('blob:')) {
+      href = href.substring(5);
+    }
+    const url = new URL(href);
+    const src = `${url.origin}/wp-content/plugins/chsa-catalogit-model-viewer/build/view.js`;
+    if (!ownerDocument.body.querySelector(`script[src="${src}"]`)) {
+      const script = ownerDocument.createElement('script');
+      script.setAttribute('src', src);
+      ownerDocument.body.appendChild(script);
+    }
   });
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Settings', 'chsa-catalogit-model-viewer')

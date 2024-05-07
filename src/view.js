@@ -20,12 +20,15 @@
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#view-script
  */
 import '@google/model-viewer';
-import domReady from '@wordpress/dom-ready';
-domReady( function () {
-	const viewers = document.querySelectorAll( 'model-viewer' );
-	for ( const viewer of viewers ) {
-		viewer.autoRotate = viewer.dataset.autoRotate === 'true';
-		viewer.ar = viewer.dataset.ar === 'true';
-		viewer.cameraControls = viewer.dataset.cameraControls === 'true';
+if ( window.self === window.top ) {
+	const domReady = ( await import( '@wordpress/dom-ready' ) ).default;
+	function init() {
+		const viewers = document.querySelectorAll( 'model-viewer' );
+		for ( const viewer of viewers ) {
+			viewer.autoRotate = viewer.dataset.autoRotate === 'true';
+			viewer.ar = viewer.dataset.ar === 'true';
+			viewer.cameraControls = viewer.dataset.cameraControls === 'true';
+		}
 	}
-} );
+	domReady( init );
+}

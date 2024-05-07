@@ -12,8 +12,11 @@ function ModelViewer( { alt, entryId, src } ) {
 							ar-modes="webxr scene-viewer quick-look"
 							tone-mapping="commerce"
 							shadow-intensity="1"
+							auto-rotate
 							data-auto-rotate
+							ar
 							data-ar
+							camera-controls
 							data-camera-controls
 						></model-viewer>
 					) }
