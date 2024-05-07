@@ -19,9 +19,12 @@
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#view-script
  */
-
-/* eslint-disable no-console */
-console.log(
-	'Hello World! (from create-block-chsa-catalogit-model-viewer block)'
-);
-/* eslint-enable no-console */
+import domReady from '@wordpress/dom-ready';
+domReady( function () {
+	const viewers = document.querySelectorAll( 'model-viewer' );
+	for ( const viewer of viewers ) {
+		viewer.autoRotate = viewer.dataset.autoRotate === 'true';
+		viewer.ar = viewer.dataset.ar === 'true';
+		viewer.cameraControls = viewer.dataset.cameraControls === 'true';
+	}
+} );

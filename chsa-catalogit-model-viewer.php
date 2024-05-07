@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name:       Chsa Catalogit Model Viewer
- * Description:       Example block scaffolded with Create Block tool.
+ * Plugin Name:       CHSA CatalogIt Model Viewer
+ * Description:       This block plug-in makes it easy to embed 3D models stored in entries in CatalogIt.
  * Requires at least: 6.1
  * Requires PHP:      7.0
  * Version:           0.1.0
- * Author:            The WordPress Contributors
- * License:           GPL-2.0-or-later
- * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Author:            Francis Li <mail@francisli.com>
+ * License:           GPL-3.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       chsa-catalogit-model-viewer
  *
  * @package CreateBlock
@@ -24,7 +24,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
-function create_block_chsa_catalogit_model_viewer_block_init() {
+function chsa_catalogit_model_viewer_block_init() {
 	register_block_type( __DIR__ . '/build' );
 }
-add_action( 'init', 'create_block_chsa_catalogit_model_viewer_block_init' );
+add_action( 'init', 'chsa_catalogit_model_viewer_block_init' );
+
+function chsa_catalogit_model_viewer_block_enqueue_block_assets() {
+	wp_enqueue_script_module('google-model-viewer', 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js');
+}
+add_action( 'enqueue_block_assets', 'chsa_catalogit_model_viewer_block_enqueue_block_assets' );

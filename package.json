@@ -19,5 +19,8 @@
 	"devDependencies": {
 		"@wordpress/env": "^9.9.0",
 		"@wordpress/scripts": "^27.8.0"
+	},
+	"dependencies": {
+		"@google/model-viewer": "^3.5.0"
 	}
 }

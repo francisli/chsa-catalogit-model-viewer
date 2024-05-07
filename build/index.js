@@ -2,6 +2,44 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/ModelViewer.js":
+/*!****************************!*\
+  !*** ./src/ModelViewer.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function ModelViewer({
+  alt,
+  src
+}) {
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "wp-block-chsa-catalogit-model-viewer__container"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "wp-block-chsa-catalogit-model-viewer__content"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("model-viewer", {
+    className: "wp-block-chsa-catalogit-model-viewer__model",
+    alt: alt,
+    src: src,
+    autoplay: true,
+    "ar-modes": "webxr scene-viewer quick-look",
+    "tone-mapping": "commerce",
+    "shadow-intensity": "1",
+    "data-auto-rotate": true,
+    "data-ar": true,
+    "data-camera-controls": true
+  }))));
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ModelViewer);
+
+/***/ }),
+
 /***/ "./src/edit.js":
 /*!*********************!*\
   !*** ./src/edit.js ***!
@@ -18,7 +56,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _ModelViewer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ModelViewer */ "./src/ModelViewer.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
 
 /**
  * Retrieves the translation of text.
@@ -35,6 +76,9 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+
+
+
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
  * Those files can contain any CSS code that gets applied to the editor.
@@ -47,14 +91,75 @@ __webpack_require__.r(__webpack_exports__);
  * The edit function describes the structure of your block in the context of the
  * editor. This represents what the editor will render when the block is used.
  *
+ * @param  root0
+ * @param  root0.attributes
+ * @param  root0.setAttributes
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  *
  * @return {Element} Element to render.
  */
-function Edit() {
-  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+function Edit({
+  attributes,
+  setAttributes
+}) {
+  const {
+    entryId,
+    alt,
+    src
+  } = attributes;
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    let isCancelled = false;
+    async function getEntry() {
+      try {
+        var _data$properties$hasD;
+        if (isCancelled) {
+          return;
+        }
+        const response = await fetch(`https://api.catalogit.app/api/public/entries/${entryId}`);
+        if (isCancelled) {
+          return;
+        }
+        const data = await response.json();
+        if (isCancelled) {
+          return;
+        }
+        let src;
+        if (data?.media) {
+          for (const obj of data.media) {
+            if (obj.derivatives?.public_original?.path?.endsWith('.glb')) {
+              src = obj.derivatives.public_original.path;
+              break;
+            }
+          }
+        }
+        const alt = (_data$properties$hasD = data?.properties?.hasDescription?.value_text) !== null && _data$properties$hasD !== void 0 ? _data$properties$hasD : data?.properties?.hasName?.value_text;
+        setAttributes({
+          src,
+          alt
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    if (entryId) {
+      getEntry();
+    }
+    return () => isCancelled = true;
+  }, [entryId, setAttributes]);
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Settings', 'chsa-catalogit-model-viewer')
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Entry ID', 'chsa-catalogit-model-viewer'),
+    value: entryId || '',
+    onChange: newValue => setAttributes({
+      entryId: newValue
+    })
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)()
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chsa Catalogit Model Viewer – hello from the editor!', 'chsa-catalogit-model-viewer'));
+  }, !!src && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ModelViewer__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    alt: alt,
+    src: src
+  })));
 }
 
 /***/ }),
@@ -127,6 +232,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _ModelViewer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ModelViewer */ "./src/ModelViewer.js");
 
 /**
  * React hook that is used to mark the block wrapper element.
@@ -136,19 +242,31 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+
 /**
  * The save function defines the way in which the different attributes should
  * be combined into the final markup, which is then serialized by the block
  * editor into `post_content`.
  *
+ * @param  root0
+ * @param  root0.attributes
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
  *
  * @return {Element} Element to render.
  */
-function save() {
-  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+function save({
+  attributes
+}) {
+  const {
+    alt,
+    src
+  } = attributes;
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save()
-  }, 'Chsa Catalogit Model Viewer – hello from the saved content!');
+  }, !!src && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ModelViewer__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    alt: alt,
+    src: src
+  }));
 }
 
 /***/ }),
@@ -207,6 +325,16 @@ module.exports = window["wp"]["blocks"];
 
 /***/ }),
 
+/***/ "@wordpress/components":
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["components"];
+
+/***/ }),
+
 /***/ "@wordpress/i18n":
 /*!******************************!*\
   !*** external ["wp","i18n"] ***!
@@ -223,7 +351,7 @@ module.exports = window["wp"]["i18n"];
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/chsa-catalogit-model-viewer","version":"0.1.0","title":"Chsa Catalogit Model Viewer","category":"widgets","icon":"smiley","description":"Example block scaffolded with Create Block tool.","example":{},"supports":{"html":false},"textdomain":"chsa-catalogit-model-viewer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"chsa/catalogit-model-viewer","version":"0.1.0","title":"CHSA CatalogIt Model Viewer","category":"widgets","description":"Displays a 3D models stored in an entry in CatalogIt.","example":{},"attributes":{"entryId":{"type":"string"},"alt":{"type":"string"},"src":{"type":"string"}},"supports":{"html":false},"textdomain":"chsa-catalogit-model-viewer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
 
 /***/ })
 
