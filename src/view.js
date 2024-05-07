@@ -19,6 +19,7 @@
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#view-script
  */
+import '@google/model-viewer';
 import domReady from '@wordpress/dom-ready';
 domReady( function () {
 	const viewers = document.querySelectorAll( 'model-viewer' );

@@ -14,6 +14,7 @@ import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 
 import { PanelBody, TextControl } from '@wordpress/components';
+import { useRefEffect } from '@wordpress/compose';
 
 import { useEffect } from 'react';
 import ModelViewer from './ModelViewer';
@@ -76,6 +77,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				setAttributes( { src, alt } );
 			} catch ( error ) {
 				console.error( error );
+				setAttributes( { src: null, alt: null } );
 			}
 		}
 		if ( entryId ) {
@@ -83,6 +85,17 @@ export default function Edit( { attributes, setAttributes } ) {
 		}
 		return () => ( isCancelled = true );
 	}, [ entryId, setAttributes ] );
+
+	const setupRef = useRefEffect( ( element ) => {
+		const { ownerDocument } = element;
+		const script = ownerDocument.createElement( 'script' );
+		script.setAttribute(
+			'src',
+			'https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js'
+		);
+		script.setAttribute( 'type', 'module' );
+		ownerDocument.body.appendChild( script );
+	} );
 
 	return (
 		<>
@@ -102,8 +115,8 @@ export default function Edit( { attributes, setAttributes } ) {
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<div { ...useBlockProps() }>
-				{ !! src && <ModelViewer alt={ alt } src={ src } /> }
+			<div { ...useBlockProps( { ref: setupRef } ) }>
+				<ModelViewer alt={ alt } entryId={ entryId } src={ src } />
 			</div>
 		</>
 	);

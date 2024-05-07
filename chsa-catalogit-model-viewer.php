@@ -29,7 +29,9 @@ function chsa_catalogit_model_viewer_block_init() {
 }
 add_action( 'init', 'chsa_catalogit_model_viewer_block_init' );
 
+/*
 function chsa_catalogit_model_viewer_block_enqueue_block_assets() {
 	wp_enqueue_script_module('google-model-viewer', 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js');
 }
 add_action( 'enqueue_block_assets', 'chsa_catalogit_model_viewer_block_enqueue_block_assets' );
+*/

@@ -20,10 +20,10 @@ import ModelViewer from './ModelViewer';
  * @return {Element} Element to render.
  */
 export default function save( { attributes } ) {
-	const { alt, src } = attributes;
+	const { alt, entryId, src } = attributes;
 	return (
 		<div { ...useBlockProps.save() }>
-			{ !! src && <ModelViewer alt={ alt } src={ src } /> }
+			<ModelViewer alt={ alt } entryId={ entryId } src={ src } />
 		</div>
 	);
 }
