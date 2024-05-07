@@ -1,26 +1,18 @@
-=== CHSA CatalogIt Model Viewer ===
-Tested up to:      6.5.2
-Stable tag:        0.1.0
-License:           GPL-3.0-or-later
-License URI:       https://www.gnu.org/licenses/gpl-3.0.html
+# CHSA CatalogIt Model Viewer
 
 Displays a 3D model stored in an entry in CatalogIt.
 
-== Installation ==
-
-This section describes how to install the plugin and get it working.
-
-e.g.
+## Installation
 
 1. Upload the plugin files to the `/wp-content/plugins/chsa-catalogit-model-viewer` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress
 
-== Changelog ==
+## Changelog
 
-= 0.1.0 =
+### 0.1.0
 * First release
 
-== Copyright ==
+## License
 
 Copyright (C) 2024 Chinese Historical Society of America
 
