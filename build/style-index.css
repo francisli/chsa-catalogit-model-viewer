@@ -13,6 +13,10 @@
   padding-top: 100%;
 }
 
+.wp-block-chsa-catalogit-model-viewer__container--wide {
+  padding-top: 60%;
+}
+
 .wp-block-chsa-catalogit-model-viewer__content {
   position: absolute;
   top: 0;
@@ -35,6 +39,12 @@
 
 .wp-block-chsa-catalogit-model-viewer__message {
   padding: 2rem;
+}
+
+.wp-block-chsa-catalogit-model-viewer__metadata {
+  max-width: var(--wp--style--global--content-size);
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 /*# sourceMappingURL=style-index.css.map*/

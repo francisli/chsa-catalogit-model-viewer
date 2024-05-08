@@ -13,10 +13,10 @@ import { __ } from '@wordpress/i18n';
  */
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 
-import { PanelBody, TextControl } from '@wordpress/components';
-import { useRefEffect } from '@wordpress/compose';
+import { ComboboxControl, PanelBody, TextControl } from '@wordpress/components';
+import { useDebouncedInput, useRefEffect } from '@wordpress/compose';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import ModelViewer from './ModelViewer';
 
 /**
@@ -39,7 +39,7 @@ import './editor.scss';
  * @return {Element} Element to render.
  */
 export default function Edit( { attributes, setAttributes } ) {
-	const { entryId, alt, src } = attributes;
+	const { accountId, entryId, alt, src, align, properties } = attributes;
 
 	useEffect( () => {
 		let isCancelled = false;
@@ -74,10 +74,10 @@ export default function Edit( { attributes, setAttributes } ) {
 				const alt =
 					data?.properties?.hasDescription?.value_text ??
 					data?.properties?.hasName?.value_text;
-				setAttributes( { src, alt } );
+				setAttributes( { src, alt, properties: data?.properties } );
 			} catch ( error ) {
 				console.error( error );
-				setAttributes( { src: null, alt: null } );
+				setAttributes( { src: null, alt: null, properties: null } );
 			}
 		}
 		if ( entryId ) {
@@ -85,6 +85,49 @@ export default function Edit( { attributes, setAttributes } ) {
 		}
 		return () => ( isCancelled = true );
 	}, [ entryId, setAttributes ] );
+
+	const [ entryFilter, setEntryFilter, debouncedEntryFilter ] =
+		useDebouncedInput( '' );
+	const [ entryOptions, setEntryOptions ] = useState( [] );
+
+	useEffect( () => {
+		let isCancelled = false;
+		if ( accountId && debouncedEntryFilter ) {
+			async function filterEntries() {
+				try {
+					if ( isCancelled ) {
+						return;
+					}
+					const url = new URL(
+						`https://api.catalogit.app/api/public/accounts/${ accountId }/entries/search`
+					);
+					url.search = new URLSearchParams( {
+						query: debouncedEntryFilter,
+					} );
+					const response = await fetch( url );
+					if ( isCancelled ) {
+						return;
+					}
+					const data = await response.json();
+					if ( isCancelled ) {
+						return;
+					}
+					const newEntryOptions =
+						data?.entries?.map( ( e ) => ( {
+							label: e.properties?.hasName?.value_text,
+							value: e.id,
+						} ) ) ?? [];
+					setEntryOptions( newEntryOptions );
+				} catch ( error ) {
+					console.error( error );
+				}
+			}
+			filterEntries();
+		} else {
+			setEntryOptions( [] );
+		}
+		return () => ( isCancelled = true );
+	}, [ accountId, debouncedEntryFilter ] );
 
 	const setupRef = useRefEffect( ( element ) => {
 		const { ownerDocument } = element;
@@ -109,6 +152,30 @@ export default function Edit( { attributes, setAttributes } ) {
 				>
 					<TextControl
 						label={ __(
+							'Account ID',
+							'chsa-catalogit-model-viewer'
+						) }
+						value={ accountId || '' }
+						onChange={ ( newValue ) =>
+							setAttributes( { accountId: newValue } )
+						}
+					/>
+					<div className="components-base-control">
+						<ComboboxControl
+							label={ __(
+								'Entry Search',
+								'chsa-catalogit-model-viewer'
+							) }
+							value={ entryId || '' }
+							options={ entryOptions }
+							onFilterValueChange={ setEntryFilter }
+							onChange={ ( newValue ) =>
+								setAttributes( { entryId: newValue } )
+							}
+						/>
+					</div>
+					<TextControl
+						label={ __(
 							'Entry ID',
 							'chsa-catalogit-model-viewer'
 						) }
@@ -120,7 +187,13 @@ export default function Edit( { attributes, setAttributes } ) {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...useBlockProps( { ref: setupRef } ) }>
-				<ModelViewer alt={ alt } entryId={ entryId } src={ src } />
+				<ModelViewer
+					alt={ alt }
+					entryId={ entryId }
+					src={ src }
+					align={ align }
+					properties={ properties }
+				/>
 			</div>
 		</>
 	);

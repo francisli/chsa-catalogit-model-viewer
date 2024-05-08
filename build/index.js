@@ -1,5 +1,4 @@
 /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/ModelViewer.js":
@@ -8,20 +7,45 @@
   \****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
 
+
+function renderPropertyValue(property) {
+  if (property.value_text) {
+    return property.value_text;
+  } else if (property.value_reference) {
+    return property.value_reference.reference_value;
+  } else if (property.value_hreference_list) {
+    return renderPropertyValue(property.value_hreference_list);
+  } else if (property.value_length) {
+    return property.value_length.length_value;
+  }
+  return '';
+}
+function renderPropertyBlock(property) {
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, property.label), Object.keys(property.value).map(key => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    key: key
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, property.value[key].label, ":"), ' ', renderPropertyValue(property.value[key]))));
+}
 function ModelViewer({
   alt,
   entryId,
-  src
+  src,
+  align,
+  properties
 }) {
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "wp-block-chsa-catalogit-model-viewer__container"
+    className: classnames__WEBPACK_IMPORTED_MODULE_1___default()('wp-block-chsa-catalogit-model-viewer__container', {
+      'wp-block-chsa-catalogit-model-viewer__container--wide': align === 'wide'
+    })
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "wp-block-chsa-catalogit-model-viewer__content"
   }, !!src && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("model-viewer", {
@@ -42,7 +66,9 @@ function ModelViewer({
     className: "wp-block-chsa-catalogit-model-viewer__placeholder"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "wp-block-chsa-catalogit-model-viewer__message"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, "Model not found for Entry ID:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), entryId)))));
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, "Model not found for Entry ID:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), entryId)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "wp-block-chsa-catalogit-model-viewer__metadata"
+  }, !!properties?.hasName && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, renderPropertyValue(properties.hasName)), !!properties?.hasDescription && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, renderPropertyValue(properties.hasDescription)), !!properties?.hasCreateOrManufactureInfo && renderPropertyBlock(properties.hasCreateOrManufactureInfo), !!properties?.hasDimensions && renderPropertyBlock(properties.hasDimensions)));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ModelViewer);
 
@@ -54,6 +80,7 @@ function ModelViewer({
   \*********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Edit)
@@ -114,9 +141,12 @@ function Edit({
   setAttributes
 }) {
   const {
+    accountId,
     entryId,
     alt,
-    src
+    src,
+    align,
+    properties
   } = attributes;
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     let isCancelled = false;
@@ -146,13 +176,15 @@ function Edit({
         const alt = (_data$properties$hasD = data?.properties?.hasDescription?.value_text) !== null && _data$properties$hasD !== void 0 ? _data$properties$hasD : data?.properties?.hasName?.value_text;
         setAttributes({
           src,
-          alt
+          alt,
+          properties: data?.properties
         });
       } catch (error) {
         console.error(error);
         setAttributes({
           src: null,
-          alt: null
+          alt: null,
+          properties: null
         });
       }
     }
@@ -161,6 +193,44 @@ function Edit({
     }
     return () => isCancelled = true;
   }, [entryId, setAttributes]);
+  const [entryFilter, setEntryFilter, debouncedEntryFilter] = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_4__.useDebouncedInput)('');
+  const [entryOptions, setEntryOptions] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    let isCancelled = false;
+    if (accountId && debouncedEntryFilter) {
+      async function filterEntries() {
+        try {
+          var _data$entries$map;
+          if (isCancelled) {
+            return;
+          }
+          const url = new URL(`https://api.catalogit.app/api/public/accounts/${accountId}/entries/search`);
+          url.search = new URLSearchParams({
+            query: debouncedEntryFilter
+          });
+          const response = await fetch(url);
+          if (isCancelled) {
+            return;
+          }
+          const data = await response.json();
+          if (isCancelled) {
+            return;
+          }
+          const newEntryOptions = (_data$entries$map = data?.entries?.map(e => ({
+            label: e.properties?.hasName?.value_text,
+            value: e.id
+          }))) !== null && _data$entries$map !== void 0 ? _data$entries$map : [];
+          setEntryOptions(newEntryOptions);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      filterEntries();
+    } else {
+      setEntryOptions([]);
+    }
+    return () => isCancelled = true;
+  }, [accountId, debouncedEntryFilter]);
   const setupRef = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_4__.useRefEffect)(element => {
     const {
       ownerDocument
@@ -182,6 +252,22 @@ function Edit({
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Settings', 'chsa-catalogit-model-viewer')
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Account ID', 'chsa-catalogit-model-viewer'),
+    value: accountId || '',
+    onChange: newValue => setAttributes({
+      accountId: newValue
+    })
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "components-base-control"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ComboboxControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Entry Search', 'chsa-catalogit-model-viewer'),
+    value: entryId || '',
+    options: entryOptions,
+    onFilterValueChange: setEntryFilter,
+    onChange: newValue => setAttributes({
+      entryId: newValue
+    })
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Entry ID', 'chsa-catalogit-model-viewer'),
     value: entryId || '',
     onChange: newValue => setAttributes({
@@ -194,7 +280,9 @@ function Edit({
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ModelViewer__WEBPACK_IMPORTED_MODULE_5__["default"], {
     alt: alt,
     entryId: entryId,
-    src: src
+    src: src,
+    align: align,
+    properties: properties
   })));
 }
 
@@ -206,6 +294,7 @@ function Edit({
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
@@ -260,6 +349,7 @@ __webpack_require__.r(__webpack_exports__);
   \*********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ save)
@@ -296,14 +386,18 @@ function save({
   const {
     alt,
     entryId,
-    src
+    src,
+    align,
+    properties
   } = attributes;
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save()
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ModelViewer__WEBPACK_IMPORTED_MODULE_2__["default"], {
     alt: alt,
     entryId: entryId,
-    src: src
+    src: src,
+    align: align,
+    properties: properties
   }));
 }
 
@@ -315,6 +409,7 @@ function save({
   \*************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
@@ -327,6 +422,7 @@ __webpack_require__.r(__webpack_exports__);
   \************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
@@ -339,6 +435,7 @@ __webpack_require__.r(__webpack_exports__);
   \************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["React"];
 
 /***/ }),
@@ -349,6 +446,7 @@ module.exports = window["React"];
   \*************************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["wp"]["blockEditor"];
 
 /***/ }),
@@ -359,6 +457,7 @@ module.exports = window["wp"]["blockEditor"];
   \********************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["wp"]["blocks"];
 
 /***/ }),
@@ -369,6 +468,7 @@ module.exports = window["wp"]["blocks"];
   \************************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["wp"]["components"];
 
 /***/ }),
@@ -379,6 +479,7 @@ module.exports = window["wp"]["components"];
   \*********************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["wp"]["compose"];
 
 /***/ }),
@@ -389,7 +490,94 @@ module.exports = window["wp"]["compose"];
   \******************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = window["wp"]["i18n"];
+
+/***/ }),
+
+/***/ "./node_modules/classnames/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/classnames/index.js ***!
+  \******************************************/
+/***/ ((module, exports) => {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	Copyright (c) 2018 Jed Watson.
+	Licensed under the MIT License (MIT), see
+	http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = '';
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (arg) {
+				classes = appendClass(classes, parseValue(arg));
+			}
+		}
+
+		return classes;
+	}
+
+	function parseValue (arg) {
+		if (typeof arg === 'string' || typeof arg === 'number') {
+			return arg;
+		}
+
+		if (typeof arg !== 'object') {
+			return '';
+		}
+
+		if (Array.isArray(arg)) {
+			return classNames.apply(null, arg);
+		}
+
+		if (arg.toString !== Object.prototype.toString && !arg.toString.toString().includes('[native code]')) {
+			return arg.toString();
+		}
+
+		var classes = '';
+
+		for (var key in arg) {
+			if (hasOwn.call(arg, key) && arg[key]) {
+				classes = appendClass(classes, key);
+			}
+		}
+
+		return classes;
+	}
+
+	function appendClass (value, newClass) {
+		if (!newClass) {
+			return value;
+		}
+	
+		if (value) {
+			return value + ' ' + newClass;
+		}
+	
+		return value + newClass;
+	}
+
+	if ( true && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+			return classNames;
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {}
+}());
+
 
 /***/ }),
 
@@ -399,7 +587,8 @@ module.exports = window["wp"]["i18n"];
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"chsa/catalogit-model-viewer","version":"0.1.0","title":"CHSA CatalogIt Model Viewer","category":"widgets","description":"Displays a 3D model stored in an entry in CatalogIt.","example":{},"attributes":{"entryId":{"type":"string"},"alt":{"type":"string"},"src":{"type":"string"}},"supports":{"html":false},"textdomain":"chsa-catalogit-model-viewer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
+"use strict";
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"chsa/catalogit-model-viewer","version":"0.2.0","title":"CHSA CatalogIt Model Viewer","category":"widgets","description":"Displays a 3D model stored in an entry in CatalogIt.","example":{},"attributes":{"accountId":{"type":"string"},"entryId":{"type":"string"},"alt":{"type":"string"},"src":{"type":"string"},"properties":{"type":"object"}},"supports":{"align":["wide"],"html":false},"textdomain":"chsa-catalogit-model-viewer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
 
 /***/ })
 
