@@ -21,6 +21,7 @@
 		"@wordpress/scripts": "^27.8.0"
 	},
 	"dependencies": {
-		"@google/model-viewer": "^3.5.0"
+		"@google/model-viewer": "^3.5.0",
+		"classnames": "^2.5.1"
 	}
 }

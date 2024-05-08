@@ -39,7 +39,7 @@ import './editor.scss';
  * @return {Element} Element to render.
  */
 export default function Edit( { attributes, setAttributes } ) {
-	const { entryId, alt, src } = attributes;
+	const { entryId, alt, src, align } = attributes;
 
 	useEffect( () => {
 		let isCancelled = false;
@@ -120,7 +120,12 @@ export default function Edit( { attributes, setAttributes } ) {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...useBlockProps( { ref: setupRef } ) }>
-				<ModelViewer alt={ alt } entryId={ entryId } src={ src } />
+				<ModelViewer
+					alt={ alt }
+					entryId={ entryId }
+					src={ src }
+					align={ align }
+				/>
 			</div>
 		</>
 	);

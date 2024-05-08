@@ -1,7 +1,17 @@
-function ModelViewer( { alt, entryId, src } ) {
+import classNames from 'classnames';
+
+function ModelViewer( { alt, entryId, src, align } ) {
 	return (
 		<>
-			<div className="wp-block-chsa-catalogit-model-viewer__container">
+			<div
+				className={ classNames(
+					'wp-block-chsa-catalogit-model-viewer__container',
+					{
+						'wp-block-chsa-catalogit-model-viewer__container--wide':
+							align === 'wide',
+					}
+				) }
+			>
 				<div className="wp-block-chsa-catalogit-model-viewer__content">
 					{ !! src && (
 						<model-viewer
