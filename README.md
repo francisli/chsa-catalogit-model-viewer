@@ -9,6 +9,10 @@ Displays a 3D model stored in an entry in CatalogIt.
 
 ## Changelog
 
+### 0.2.0
+* Added autocomplete entry search in block settings pane
+* Render entry metadata under viewer
+
 ### 0.1.0
 * First release
 

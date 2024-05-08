@@ -588,7 +588,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"chsa/catalogit-model-viewer","version":"0.1.0","title":"CHSA CatalogIt Model Viewer","category":"widgets","description":"Displays a 3D model stored in an entry in CatalogIt.","example":{},"attributes":{"accountId":{"type":"string"},"entryId":{"type":"string"},"alt":{"type":"string"},"src":{"type":"string"},"properties":{"type":"object"}},"supports":{"align":["wide"],"html":false},"textdomain":"chsa-catalogit-model-viewer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"chsa/catalogit-model-viewer","version":"0.2.0","title":"CHSA CatalogIt Model Viewer","category":"widgets","description":"Displays a 3D model stored in an entry in CatalogIt.","example":{},"attributes":{"accountId":{"type":"string"},"entryId":{"type":"string"},"alt":{"type":"string"},"src":{"type":"string"},"properties":{"type":"object"}},"supports":{"align":["wide"],"html":false},"textdomain":"chsa-catalogit-model-viewer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
 
 /***/ })
 

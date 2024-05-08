@@ -1,6 +1,6 @@
 {
 	"name": "chsa-catalogit-model-viewer",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Displays a 3D model stored in an entry in CatalogIt.",
 	"author": "Francis Li",
 	"license": "GPL-3.0-or-later",
