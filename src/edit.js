@@ -39,7 +39,7 @@ import './editor.scss';
  * @return {Element} Element to render.
  */
 export default function Edit( { attributes, setAttributes } ) {
-	const { accountId, entryId, alt, src, align } = attributes;
+	const { accountId, entryId, alt, src, align, properties } = attributes;
 
 	useEffect( () => {
 		let isCancelled = false;
@@ -74,10 +74,10 @@ export default function Edit( { attributes, setAttributes } ) {
 				const alt =
 					data?.properties?.hasDescription?.value_text ??
 					data?.properties?.hasName?.value_text;
-				setAttributes( { src, alt } );
+				setAttributes( { src, alt, properties: data?.properties } );
 			} catch ( error ) {
 				console.error( error );
-				setAttributes( { src: null, alt: null } );
+				setAttributes( { src: null, alt: null, properties: null } );
 			}
 		}
 		if ( entryId ) {
@@ -192,6 +192,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					entryId={ entryId }
 					src={ src }
 					align={ align }
+					properties={ properties }
 				/>
 			</div>
 		</>

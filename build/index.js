@@ -18,11 +18,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
 
 
+function renderPropertyValue(property) {
+  if (property.value_text) {
+    return property.value_text;
+  } else if (property.value_reference) {
+    return property.value_reference.reference_value;
+  } else if (property.value_hreference_list) {
+    return renderPropertyValue(property.value_hreference_list);
+  } else if (property.value_length) {
+    return property.value_length.length_value;
+  }
+  return '';
+}
+function renderPropertyBlock(property) {
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, property.label), Object.keys(property.value).map(key => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    key: key
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, property.value[key].label, ":"), ' ', renderPropertyValue(property.value[key]))));
+}
 function ModelViewer({
   alt,
   entryId,
   src,
-  align
+  align,
+  properties
 }) {
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: classnames__WEBPACK_IMPORTED_MODULE_1___default()('wp-block-chsa-catalogit-model-viewer__container', {
@@ -48,7 +66,9 @@ function ModelViewer({
     className: "wp-block-chsa-catalogit-model-viewer__placeholder"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "wp-block-chsa-catalogit-model-viewer__message"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, "Model not found for Entry ID:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), entryId)))));
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, "Model not found for Entry ID:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), entryId)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "wp-block-chsa-catalogit-model-viewer__metadata"
+  }, !!properties?.hasName && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, renderPropertyValue(properties.hasName)), !!properties?.hasDescription && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, renderPropertyValue(properties.hasDescription)), !!properties?.hasCreateOrManufactureInfo && renderPropertyBlock(properties.hasCreateOrManufactureInfo), !!properties?.hasDimensions && renderPropertyBlock(properties.hasDimensions)));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ModelViewer);
 
@@ -125,7 +145,8 @@ function Edit({
     entryId,
     alt,
     src,
-    align
+    align,
+    properties
   } = attributes;
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     let isCancelled = false;
@@ -155,13 +176,15 @@ function Edit({
         const alt = (_data$properties$hasD = data?.properties?.hasDescription?.value_text) !== null && _data$properties$hasD !== void 0 ? _data$properties$hasD : data?.properties?.hasName?.value_text;
         setAttributes({
           src,
-          alt
+          alt,
+          properties: data?.properties
         });
       } catch (error) {
         console.error(error);
         setAttributes({
           src: null,
-          alt: null
+          alt: null,
+          properties: null
         });
       }
     }
@@ -258,7 +281,8 @@ function Edit({
     alt: alt,
     entryId: entryId,
     src: src,
-    align: align
+    align: align,
+    properties: properties
   })));
 }
 
@@ -363,7 +387,8 @@ function save({
     alt,
     entryId,
     src,
-    align
+    align,
+    properties
   } = attributes;
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save()
@@ -371,7 +396,8 @@ function save({
     alt: alt,
     entryId: entryId,
     src: src,
-    align: align
+    align: align,
+    properties: properties
   }));
 }
 
@@ -562,7 +588,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"chsa/catalogit-model-viewer","version":"0.1.0","title":"CHSA CatalogIt Model Viewer","category":"widgets","description":"Displays a 3D model stored in an entry in CatalogIt.","example":{},"attributes":{"accountId":{"type":"string"},"entryId":{"type":"string"},"alt":{"type":"string"},"src":{"type":"string"}},"supports":{"align":["wide"],"html":false},"textdomain":"chsa-catalogit-model-viewer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"chsa/catalogit-model-viewer","version":"0.1.0","title":"CHSA CatalogIt Model Viewer","category":"widgets","description":"Displays a 3D model stored in an entry in CatalogIt.","example":{},"attributes":{"accountId":{"type":"string"},"entryId":{"type":"string"},"alt":{"type":"string"},"src":{"type":"string"},"properties":{"type":"object"}},"supports":{"align":["wide"],"html":false},"textdomain":"chsa-catalogit-model-viewer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
 
 /***/ })
 

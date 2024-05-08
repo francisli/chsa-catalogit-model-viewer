@@ -41,4 +41,10 @@
   padding: 2rem;
 }
 
+.wp-block-chsa-catalogit-model-viewer__metadata {
+  max-width: var(--wp--style--global--content-size);
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 /*# sourceMappingURL=style-index.css.map*/

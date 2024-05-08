@@ -19,6 +19,9 @@
 		},
 		"src": {
 			"type": "string"
+		},
+		"properties": {
+			"type": "object"
 		}
 	},
 	"supports": {
