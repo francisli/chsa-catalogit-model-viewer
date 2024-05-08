@@ -121,6 +121,7 @@ function Edit({
   setAttributes
 }) {
   const {
+    accountId,
     entryId,
     alt,
     src,
@@ -169,6 +170,44 @@ function Edit({
     }
     return () => isCancelled = true;
   }, [entryId, setAttributes]);
+  const [entryFilter, setEntryFilter, debouncedEntryFilter] = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_4__.useDebouncedInput)('');
+  const [entryOptions, setEntryOptions] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    let isCancelled = false;
+    if (accountId && debouncedEntryFilter) {
+      async function filterEntries() {
+        try {
+          var _data$entries$map;
+          if (isCancelled) {
+            return;
+          }
+          const url = new URL(`https://api.catalogit.app/api/public/accounts/${accountId}/entries/search`);
+          url.search = new URLSearchParams({
+            query: debouncedEntryFilter
+          });
+          const response = await fetch(url);
+          if (isCancelled) {
+            return;
+          }
+          const data = await response.json();
+          if (isCancelled) {
+            return;
+          }
+          const newEntryOptions = (_data$entries$map = data?.entries?.map(e => ({
+            label: e.properties?.hasName?.value_text,
+            value: e.id
+          }))) !== null && _data$entries$map !== void 0 ? _data$entries$map : [];
+          setEntryOptions(newEntryOptions);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      filterEntries();
+    } else {
+      setEntryOptions([]);
+    }
+    return () => isCancelled = true;
+  }, [accountId, debouncedEntryFilter]);
   const setupRef = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_4__.useRefEffect)(element => {
     const {
       ownerDocument
@@ -190,6 +229,22 @@ function Edit({
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Settings', 'chsa-catalogit-model-viewer')
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Account ID', 'chsa-catalogit-model-viewer'),
+    value: accountId || '',
+    onChange: newValue => setAttributes({
+      accountId: newValue
+    })
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "components-base-control"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ComboboxControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Entry Search', 'chsa-catalogit-model-viewer'),
+    value: entryId || '',
+    options: entryOptions,
+    onFilterValueChange: setEntryFilter,
+    onChange: newValue => setAttributes({
+      entryId: newValue
+    })
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Entry ID', 'chsa-catalogit-model-viewer'),
     value: entryId || '',
     onChange: newValue => setAttributes({
@@ -507,7 +562,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"chsa/catalogit-model-viewer","version":"0.1.0","title":"CHSA CatalogIt Model Viewer","category":"widgets","description":"Displays a 3D model stored in an entry in CatalogIt.","example":{},"attributes":{"entryId":{"type":"string"},"alt":{"type":"string"},"src":{"type":"string"}},"supports":{"align":["wide"],"html":false},"textdomain":"chsa-catalogit-model-viewer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"chsa/catalogit-model-viewer","version":"0.1.0","title":"CHSA CatalogIt Model Viewer","category":"widgets","description":"Displays a 3D model stored in an entry in CatalogIt.","example":{},"attributes":{"accountId":{"type":"string"},"entryId":{"type":"string"},"alt":{"type":"string"},"src":{"type":"string"}},"supports":{"align":["wide"],"html":false},"textdomain":"chsa-catalogit-model-viewer","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
 
 /***/ })
 
