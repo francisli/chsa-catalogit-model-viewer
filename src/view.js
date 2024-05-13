@@ -22,13 +22,39 @@
 import '@google/model-viewer';
 if ( window.self === window.top ) {
 	const domReady = ( await import( '@wordpress/dom-ready' ) ).default;
-	function init() {
+	async function init() {
 		const viewers = document.querySelectorAll( 'model-viewer' );
+		const promises = [];
 		for ( const viewer of viewers ) {
 			viewer.autoRotate = viewer.dataset.autoRotate === 'true';
 			viewer.ar = viewer.dataset.ar === 'true';
 			viewer.cameraControls = viewer.dataset.cameraControls === 'true';
+			const { entryId } = viewer.dataset;
+			async function getEntry() {
+				const response = await fetch(
+					`https://api.catalogit.app/api/public/entries/${ entryId }`
+				);
+				const data = await response.json();
+				let src;
+				if ( data?.media ) {
+					for ( const obj of data.media ) {
+						if (
+							obj.derivatives?.public_original?.path?.endsWith(
+								'.glb'
+							)
+						) {
+							src = obj.derivatives.public_original.path;
+							break;
+						}
+					}
+				}
+				if (src) {
+					viewer.src = src;
+				}
+			}
+			promises.push(getEntry());
 		}
+		await Promise.all(promises());
 	}
 	domReady( init );
 }

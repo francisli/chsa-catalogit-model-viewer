@@ -61,7 +61,8 @@ function ModelViewer({
     ar: true,
     "data-ar": true,
     "camera-controls": true,
-    "data-camera-controls": true
+    "data-camera-controls": true,
+    "data-entry-id": entryId
   }), !src && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "wp-block-chsa-catalogit-model-viewer__placeholder"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {

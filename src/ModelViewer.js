@@ -55,6 +55,7 @@ function ModelViewer( { alt, entryId, src, align, properties } ) {
 							data-ar
 							camera-controls
 							data-camera-controls
+							data-entry-id={entryId}
 						></model-viewer>
 					) }
 					{ ! src && (
